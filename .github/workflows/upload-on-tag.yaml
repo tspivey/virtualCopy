@@ -20,8 +20,6 @@ jobs:
       run: pip install scons markdown
     - name: Build add-on
       run: scons
-    - name: Build pot template
-      run: scons pot
     - name: Calculate sha256
       run: sha256sum *.nvda-addon >> changelog.md
     - name: Release
@@ -31,7 +29,5 @@ jobs:
       with:
         files: |
           *.nvda-addon
-          *.json
-          *.pot
-        body_path: changelog.md
+          dy_path: changelog.md
         prerelease: ${{ endsWith(github.ref, '-dev') }}

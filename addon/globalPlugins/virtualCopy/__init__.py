@@ -11,6 +11,10 @@ import addonHandler
 
 addonHandler.initTranslation()
 
+def process_text(text):
+	"""Strip trailing whitespace from every line and trailing newlines from the end."""
+	return '\n'.join(line.rstrip() for line in text.split('\n')).rstrip('\n')
+
 def finally_(func, final):
 	"""Calls final after func, even if it fails."""
 	def wrap(f):
@@ -66,26 +70,25 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def copy_line(self):
 		info = api.getReviewPosition().copy()
 		info.expand(textInfos.UNIT_LINE)
-		info.copyToClipboard()
+		api.copyToClip(process_text(info.clipboardText))
 
 	def copy_word(self):
 		ui.message("word")
 		info = api.getReviewPosition().copy()
 		info.expand(textInfos.UNIT_WORD)
-		info.copyToClipboard()
+		api.copyToClip(process_text(info.clipboardText))
 
 	def copy_window(self):
 		info = api.getReviewPosition().copy()
 		info.expand(textInfos.UNIT_STORY)
-		t = info.clipboardText.rstrip('\n')
-		api.copyToClip(t)
+		api.copyToClip(process_text(info.clipboardText))
 
 	def script_copy_to_start(self, gesture):
 		info = api.getReviewPosition().copy()
 		info2 = info.copy()
 		info.expand(textInfos.UNIT_LINE)
 		info.setEndPoint(info2, "endToEnd")
-		info.copyToClipboard()
+		api.copyToClip(process_text(info.clipboardText))
 		ui.message("copied")
 
 	def script_copy_to_end(self, gesture):
@@ -93,7 +96,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		info2 = info.copy()
 		info.expand(textInfos.UNIT_LINE)
 		info.setEndPoint(info2, "startToStart")
-		info.copyToClipboard()
+		api.copyToClip(process_text(info.clipboardText))
 		ui.message("copied")
 
 	def script_virtualCopy(self, gesture):
